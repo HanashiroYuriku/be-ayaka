@@ -26,11 +26,12 @@ A Golang (Go) Backend API template designed with Clean Architecture. This projec
 6.  **Custom JSON Logger:** Structured logging using JSON format for easy integration with observability and monitoring systems (like Elasticsearch or Datadog).
 
 ## 📂 Project Structure
-
+```
 ├── cmd/            # Application entry point
 ├── config/         # Viper & Godotenv configurations
 ├── internal/       # Core business logic (Adapter, Domain, Core)
 └── pkg/            # Reusable packages (Logger, Validator)
+```
 
 ## 💡 Usage Examples
 

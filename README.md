@@ -1,6 +1,6 @@
 # 🌸 Ayaka Backend Template
 
-A Golang (Go) Backend API template designed with Enterprise standards and Clean Architecture. This project focuses on scalability, security, and seamless team collaboration.
+A Golang (Go) Backend API template designed with Clean Architecture. This project focuses on scalability, security, and seamless team collaboration.
 
 ## 🚀 Core Technologies
 
@@ -24,6 +24,46 @@ A Golang (Go) Backend API template designed with Enterprise standards and Clean 
     * `whitespace`: Rejects whitespaces in strict input fields.
 5.  **Graceful Shutdown:** Safely terminates the server and cleans up resources without dropping ongoing requests.
 6.  **Custom JSON Logger:** Structured logging using JSON format for easy integration with observability and monitoring systems (like Elasticsearch or Datadog).
+
+## 📂 Project Structure
+
+├── cmd/            # Application entry point
+├── config/         # Viper & Godotenv configurations
+├── internal/       # Core business logic (Adapter, Domain, Core)
+└── pkg/            # Reusable packages (Logger, Validator)
+
+## 💡 Usage Examples
+
+### How to Use Custom Validators
+This template comes with powerful, database-aware custom validation tags. You can easily apply them to your Data Transfer Object (DTO) structs using the `validate` tag.
+
+**Example Struct:**
+```go
+package dto
+
+type RegisterUserRequest struct {
+    Name     string `json:"name" validate:"required,min=3"`
+    
+    // unique=table_name->column_name
+    // Checks if the email already exists in the 'users' table
+    Email    string `json:"email" validate:"required,email,unique=users->email"`
+    
+    // complexpassword: Enforces uppercase, lowercase, number, and special char (8-12 chars)
+    // whitespace: Rejects any space characters
+    Password string `json:"password" validate:"required,complexpassword,whitespace"`
+    
+    // incolumn=table_name->column_name
+    // Validates if the provided role_id actually exists in the 'roles' table (Foreign Key check)
+    RoleID   string `json:"role_id" validate:"required,incolumn=roles->id"`
+}
+```
+
+### Available Custom Validation Tags:
+
+* **`unique=<table_name>-><column_name>`**: Returns an error if the value already exists in the specified database table. Perfect for validating unique emails or usernames during registration.
+* **`incolumn=<table_name>-><column_name>`**: Returns an error if the value does not exist in the specified database table. Extremely useful for validating Foreign Keys before inserting data.
+* **`complexpassword`**: Enforces high-security password policies.
+* **`whitespace`**: Ensures the input string contains no spaces.
 
 ## 🛠️ Getting Started (Local Development)
 
@@ -54,13 +94,6 @@ Use the following command to start the server and trigger the auto-migration pro
 go run main.go svc
 ```
 If the setup is successful, you will see the success log indicating a stable connection to PostgreSQL, followed by the AYAKA ASCII Art in your terminal. The server will be accessible at http://localhost:8000.
-
-## 📂 Project Structure
-
-├── cmd/            # Application entry point
-├── config/         # Viper & Godotenv configurations
-├── internal/       # Core business logic (Adapter, Domain, Application)
-└── pkg/            # Reusable packages (Logger, Validator)
 
 ## 🌟 Credits & Acknowledgements
 

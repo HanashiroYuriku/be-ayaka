@@ -1,1 +1,11 @@
+# Environment Variables
 .env
+
+# Build Executables
+/main
+*.exe
+*.out
+
+# Logs
+/logs/*
+!/logs/.keep

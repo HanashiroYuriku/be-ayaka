@@ -33,7 +33,7 @@ func Run(cfg *config.Config) {
 		WriteTimeout:          10 * time.Second,
 		DisableStartupMessage: true,
 	})
-	core.SetupRoutes(app, cfg)
+	core.SetupRoutes(app, cfg, db)
 
 	// run server in a goroutine
 	go func() {

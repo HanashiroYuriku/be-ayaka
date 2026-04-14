@@ -10,7 +10,6 @@ import (
 
 	"be-ayaka/config"
 	"be-ayaka/internal/adapter/database"
-	"be-ayaka/internal/core"
 	ayaka "be-ayaka/pkg/logger"
 	"be-ayaka/pkg/validator"
 
@@ -33,7 +32,7 @@ func Run(cfg *config.Config) {
 		WriteTimeout:          10 * time.Second,
 		DisableStartupMessage: true,
 	})
-	core.SetupRoutes(app, cfg, db)
+	SetupRoutes(app, cfg, db)
 
 	// run server in a goroutine
 	go func() {
@@ -44,7 +43,7 @@ func Run(cfg *config.Config) {
 			ayaka.Log("SYSTEM", "ERROR", fmt.Sprintf("Failed to start server: %v", err))
 		}
 	}()
-	printLogo(cfg.Server.Port)
+	logo(cfg.Server.Port)
 
 	// graceful shutdown
 	quit := make(chan os.Signal, 1)
@@ -62,7 +61,7 @@ func Run(cfg *config.Config) {
 	ayaka.Log("SYSTEM", "INFO", "🌸 Ayaka Server shutdown complete")
 }
 
-func printLogo(port int) {
+func logo(port int) {
 	fmt.Printf(`
      ░█▀▀█ ░█──░█ ░█▀▀█ ░█─▄▀ ░█▀▀█ 
      ▒█▄▄█ ░█▄▄▄█ ▒█▄▄█ ░█▀▄─ ▒█▄▄█ 

@@ -1,8 +1,8 @@
-package core
+package bootstrap
 
 import (
 	"be-ayaka/config"
-	"be-ayaka/internal/core/api"
+	"be-ayaka/internal/delivery/http"
 	"be-ayaka/internal/middleware"
 	"be-ayaka/pkg/utils"
 
@@ -17,12 +17,12 @@ func SetupRoutes(app *fiber.App, cfg *config.Config, db *gorm.DB) {
 		Header:     fiber.HeaderXRequestID,
 		ContextKey: "request_id",
 		Generator: func() string {
-			return utils.GenerateID("TRACE")
+			return utils.GenerateID("REQUEST")
 		},
 	}))
 
 	// Health Check
-	healthHandler := api.NewHealthCheckHandler(cfg, db)
+	healthHandler := http.NewHealthCheckHandler(cfg, db)
 	// health route
 	app.Get("/health", healthHandler.Check)
 	// ---

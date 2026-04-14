@@ -14,6 +14,7 @@ type Config struct {
 	Server   ServerConfig   `mapstructure:"server"`
 	Log      LogConfig      `mapstructure:"log"`
 	Database DatabaseConfig `mapstructure:"database"`
+	JWT      JwtConfig      `mapstructure:"jwt"`
 }
 
 type AppConfig struct {
@@ -42,6 +43,11 @@ type DatabaseConfig struct {
 	Name     string `mapstructure:"name"`
 }
 
+type JwtConfig struct {
+	Secret  string `mapstructure:"secret"`
+	Expired int    `mapstructure:"expired"` // hours
+}
+
 // LoadConfig loads configuration from file and environment variables
 func LoadConfig() (*Config, error) {
 	// load .env file
@@ -65,7 +71,7 @@ func LoadConfig() (*Config, error) {
 		if strings.HasPrefix(value, "${") && strings.HasSuffix(value, "}") {
 			// Ekstrak nama environment variable dari value
 			envQuery := strings.TrimSuffix(strings.TrimPrefix(value, "${"), "}")
-			
+
 			// Ganti teks di Viper dengan nilai asli dari OS/Env
 			v.Set(k, getEnvOrPanic(envQuery))
 		}
@@ -83,20 +89,20 @@ func LoadConfig() (*Config, error) {
 // getEnvOrPanic is a helper function to get environment variable or panic if not found
 func getEnvOrPanic(env string) string {
 	// Split env by ":" to separate env name and default value (if any)
-	split := strings.SplitN(env, ":", 2) 
-	
+	split := strings.SplitN(env, ":", 2)
+
 	envName := split[0]
 	res := os.Getenv(envName) // Cari di sistem
-	
+
 	// if not found in system, check if there's a default value in the yaml (split[1])
 	if len(res) == 0 {
 		if len(split) > 1 {
-			res = split[1] 
-			
+			res = split[1]
+
 			// remove surrounding quotes if any (untuk kasus default value yang berupa string dengan spasi, exmp: "default value")
-			res = strings.Trim(res, "\"") 
+			res = strings.Trim(res, "\"")
 		}
-		
+
 		// if still empty (and not a password since passwords can be empty)
 		if len(res) == 0 && !strings.Contains(strings.ToLower(envName), "pass") {
 			panic(fmt.Sprintf("Environment Variable Not Found: %s", envName))

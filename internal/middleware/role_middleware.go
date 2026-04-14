@@ -11,7 +11,7 @@ func OnlyRole(allowedRoles ...string) fiber.Handler {
 		requestId, ok := c.Locals("request_id").(string)
 
 		if !ok {
-			requestId = c.Get("X-Request-ID", "unknown-trace-id")
+			requestId = c.Get("X-Request-ID", "unknown-request-id")
 		}
 
 		userRole, ok := c.Locals("role").(string)

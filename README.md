@@ -48,13 +48,13 @@ be-ayaka/
 
 To maintain the integrity of Clean Architecture, follow this sequence when adding a new feature:
 
-1. **Entity**: Define your data structure in `internal/core/entity/`.
-2. **Repository Interface**: Define the database contract in `internal/core/repository/`.
-3. **Repository Implementation**: Write the GORM logic in `internal/adapter/repository/`.
-4. **Service**: Implement the business logic and use cases in `internal/core/service/`.
-5. **Handler**: Create the HTTP delivery logic in `internal/core/api/`.
-6. **Builder**: Wire all dependencies together in `internal/bootstrap/builder.go`.
-7. **Routes**: Register your new endpoint in `internal/bootstrap/routes.go`.
+1. **Entity (The Corest):** Define your pure data structure in `internal/core/entity/`.
+2. **Repository Interface (The Contract):** Define the database contract in `internal/core/repository/`.
+3. **Repository Adapter (The Implementation):** Write the GORM SQL logic in `internal/adapter/repository/` to fulfill the contract.
+4. **Service (The Brain):** Implement the business logic and use cases in `internal/core/service/`.
+5. **Delivery/Handler (The Receptionist):** Create the HTTP delivery logic in `internal/delivery/http/`.
+6. **Builder (The Matchmaker):** Wire all dependencies (Adapter -> Service -> Handler) together in `internal/bootstrap/builder.go`.
+7. **Routes (The Door):** Register your new endpoint to the Fiber app in `internal/bootstrap/routes.go`.
 
 ## Usage Examples
 

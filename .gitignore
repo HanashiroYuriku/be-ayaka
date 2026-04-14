@@ -7,5 +7,6 @@
 *.out
 
 # Logs
+*.log
 /logs/*
 !/logs/.keep

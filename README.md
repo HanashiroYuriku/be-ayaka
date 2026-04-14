@@ -16,7 +16,7 @@ A Golang (Go) Backend API template designed with Clean Architecture. This projec
 1. **Strict Layered Architecture:** Clear separation between `core` (Entities, Interfaces, Business Logic) and `adapter` (Database implementation, External APIs) to ensure the business rules remain agnostic of frameworks.
 2. **Dependency Injection (Builder Pattern):** Handlers, Services, and Repositories are decoupled and wired cleanly at the composition root (`builder.go`), making the app 100% testable.
 3. **Advanced Observability & Logging:** * Custom JSON Logger ready for Datadog/Elasticsearch.
-   * **Trace ID Injection:** Automatically tracks request flows across logs and responses for painless debugging.
+   * **Request ID:** Automatically tracks request flows across logs and responses for painless debugging.
 4. **Enterprise Health Check:** A `/health` endpoint that actively pings the database connection to report real-time system status (Up/Down) for Kubernetes/Docker Swarm load balancers.
 5. **Database Auto-Migration (Code-First):** Tables and relationships are automatically generated via Golang structs.
 6. **Smart Custom Validators:** Database-aware validation rules (`unique`, `incolumn`) to prevent SQL Injection and enforce foreign key constraints seamlessly.
@@ -25,20 +25,36 @@ A Golang (Go) Backend API template designed with Clean Architecture. This projec
 ## 📂 Project Structure
 ```text
 be-ayaka/
-├── cmd/                 # Application entry point (main.go, cli commands)
-├── config/              # Viper configuration setup
-├── internal/            # Application codebase
-│   ├── adapter/         # Infrastructure layer (Database implementation, 3rd party APIs)
-│   │   └── repository/  # GORM Postgres Implementations
-│   ├── core/            # Business logic layer (The Heart of Ayaka)
-│   │   ├── api/         # Delivery Layer: HTTP Handlers (Fiber)
+├── cmd/                 # Application entry point (CLI commands, root.go, server.go)
+├── config/              # Configuration setup (Viper, Godotenv)
+├── internal/            # Private application codebase
+│   ├── adapter/         # Infrastructure layer (Database connections, 3rd party APIs)
+│   │   ├── database/    # Database initialization (PostgreSQL)
+│   │   └── repository/  # GORM Implementations (Fulfills core repository contracts)
+│   ├── bootstrap/       # The Wiring (Dependency Injection, App Init, Routes)
+│   ├── core/            # Core Business Logic (The Holy Grail - Framework Agnostic)
 │   │   ├── entity/      # Business Rules: Pure Data Structs
 │   │   ├── repository/  # Contracts: Repository Interfaces
 │   │   └── service/     # Application Business Rules: Use Cases
-│   └── middleware/      # HTTP Interceptors (JWT Auth, Role checking)
+│   ├── delivery/        # Transport Mechanism (The Receptionist)
+│   │   └── http/        # HTTP Handlers (Fiber controllers: health, user, auth)
+│   └── middleware/      # HTTP Interceptors (JWT Auth, Role checking, Request ID)
+├── logs/                # Application log files
 ├── pkg/                 # Reusable, domain-agnostic tools (Hash, JWT, Logger, Validator)
 └── .env.sample          # Environment variables template
 ```
+
+## Development Workflow
+
+To maintain the integrity of Clean Architecture, follow this sequence when adding a new feature:
+
+1. **Entity**: Define your data structure in `internal/core/entity/`.
+2. **Repository Interface**: Define the database contract in `internal/core/repository/`.
+3. **Repository Implementation**: Write the GORM logic in `internal/adapter/repository/`.
+4. **Service**: Implement the business logic and use cases in `internal/core/service/`.
+5. **Handler**: Create the HTTP delivery logic in `internal/core/api/`.
+6. **Builder**: Wire all dependencies together in `internal/bootstrap/builder.go`.
+7. **Routes**: Register your new endpoint in `internal/bootstrap/routes.go`.
 
 ## Usage Examples
 

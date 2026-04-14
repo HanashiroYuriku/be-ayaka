@@ -1,4 +1,4 @@
-package api
+package http
 
 import (
 	"be-ayaka/internal/core/service"
@@ -21,7 +21,7 @@ func (h *UserHandler) GetProfile(c *fiber.Ctx) error {
 	userID := c.Locals("userID").(string)
 	requestId, ok := c.Locals("request_id").(string)
 	if !ok {
-		requestId = "unknown-trace-id"
+		requestId = c.Get("X-Request-ID", "unknown-request-id")
 	}
 
 	userEntity, err := h.userService.GetProfile(userID)

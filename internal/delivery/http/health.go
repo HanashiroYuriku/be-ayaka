@@ -1,4 +1,4 @@
-package api
+package http
 
 import (
 	"be-ayaka/config"

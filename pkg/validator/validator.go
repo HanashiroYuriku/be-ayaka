@@ -99,7 +99,7 @@ func (v *GoValidator) registerCustomValidators() {
 	v.validate.RegisterTranslation("complexpassword", v.uni, func(ut ut.Translator) error {
 		return ut.Add("complexpassword", "{0} not valid", true)
 	}, func(ut ut.Translator, fe validator.FieldError) string {
-		return "Password must be 8-12 characters long, contain: uppercase, lowercase, special character and number"
+		return "Password must be 8-64 characters long, contain: uppercase, lowercase, special character and number"
 	})
 }
 
@@ -151,7 +151,7 @@ func (v *GoValidator) incolumnValidator(fl validator.FieldLevel) bool {
 // complexPasswordValidator digunakan untuk validasi password yang kompleks (8-12 karakter, harus ada huruf besar, huruf kecil, angka, dan karakter khusus)
 func (v *GoValidator) complexPasswordValidator(fl validator.FieldLevel) bool {
 	password := fl.Field().String()
-	if len(password) < 8 || len(password) > 12 {
+	if len(password) < 8 || len(password) > 64 {
 		return false
 	}
 	hasLower := regexp.MustCompile(`[a-z]`).MatchString(password)
@@ -200,16 +200,29 @@ func (ve *ValidationError) Error() string {
 
 // Helper function to convert snake_case to Proper Case (for better error messages)
 func toProperCase(input string) string {
-	words := strings.Split(input, "_")
-	for i, word := range words {
-		if len(word) > 0 {
-			runes := []rune(word)
-			runes[0] = unicode.ToUpper(runes[0])
-			for j := 1; j < len(runes); j++ {
-				runes[j] = unicode.ToLower(runes[j])
-			}
-			words[i] = string(runes)
+	// snake case
+	input = strings.ReplaceAll(input, "_", " ")
+
+	// camel case
+	var spacedString strings.Builder
+	for i, r := range input {
+		if i > 0 && unicode.IsUpper(r) && input[i-1] != ' ' {
+			spacedString.WriteRune(' ')
 		}
+		spacedString.WriteRune(r)
 	}
+
+	// make first word capital
+	words := strings.Fields(spacedString.String())
+	for i, word := range words {
+		runes := []rune(word)
+		runes[0] = unicode.ToUpper(runes[0])
+		
+		for j := 1; j < len(runes); j++ {
+			runes[j] = unicode.ToLower(runes[j])
+		}
+		words[i] = string(runes)
+	}
+
 	return strings.Join(words, " ")
 }

@@ -136,3 +136,5 @@ GET http://localhost:8000/health
 * **Hanashiro Yuriku**
 * **Gemini** - *AI Pair Programmer*
   Served as a technical consultant and coding assistant, providing architectural insights and collaborative debugging throughout the development journey.
+
+  **Disclaimer:** *The names Ayaka used in this architectural blueprint are inspired by characters from Genshin Impact. This project is open-source, purely for personal/educational purposes, and is not affiliated with, endorsed, or sponsored by HoYoverse/Cognosphere.*

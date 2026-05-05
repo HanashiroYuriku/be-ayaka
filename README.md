@@ -1,8 +1,8 @@
-# 🌸 Ayaka Backend Template
+# Ayaka Backend Template
 
-A Golang (Go) Backend API template designed with Clean Architecture. This project focuses on scalability, security, and seamless team collaboration.
+Ayaka is a backend API template developed in the Go programming language, adhering to the principles of Clean Architecture. This system is engineered to provide a scalable, secure, and modular foundation for enterprise-level application development.
 
-## Core Technologies
+## Technical Specifications
 
 * **Language:** [Golang](https://go.dev/)
 * **Web Framework:** [Go Fiber v2](https://gofiber.io/)
@@ -13,14 +13,15 @@ A Golang (Go) Backend API template designed with Clean Architecture. This projec
 
 ## Current Features
 
-1. **Strict Layered Architecture:** Clear separation between `core` (Entities, Interfaces, Business Logic) and `adapter` (Database implementation, External APIs) to ensure the business rules remain agnostic of frameworks.
-2. **Dependency Injection (Builder Pattern):** Handlers, Services, and Repositories are decoupled and wired cleanly at the composition root (`builder.go`), making the app 100% testable.
-3. **Advanced Observability & Logging:** * Custom JSON Logger ready for Datadog/Elasticsearch.
-   * **Request ID:** Automatically tracks request flows across logs and responses for painless debugging.
-4. **Enterprise Health Check:** A `/health` endpoint that actively pings the database connection to report real-time system status (Up/Down) for Kubernetes/Docker Swarm load balancers.
-5. **Database Auto-Migration (Code-First):** Tables and relationships are automatically generated via Golang structs.
-6. **Smart Custom Validators:** Database-aware validation rules (`unique`, `incolumn`) to prevent SQL Injection and enforce foreign key constraints seamlessly.
-7. **Graceful Shutdown:** Safely terminates the server and cleans up database connections without dropping ongoing client requests.
+## Core Functional Features
+
+1. **Strict Layered Architecture:** Implementation of clear boundaries between the `core` layer (Business Logic) and the `adapter` layer (Infrastructure) to maintain framework-agnostic business rules.
+2. **Dependency Injection:** Utilization of the Builder Pattern to decouple Handlers, Services, and Repositories, consolidated at the composition root (`builder.go`) for enhanced testability.
+3. **Observability and Logging:** Integration of a structured JSON Logger compatible with Datadog/Elasticsearch and automated Request ID tracking for distributed tracing.
+4. **Health Monitoring:** A dedicated `/health` endpoint for real-time system status reporting, suitable for Kubernetes and Docker Swarm orchestration.
+5. **Schema Management:** Automated database migrations via Go structs (Code-First approach).
+6. **Advanced Validation:** Custom database-aware validation tags (`unique`, `incolumn`) designed to enforce referential integrity and mitigate injection risks.
+7. **Process Management:** Implementation of graceful shutdown procedures to ensure data integrity during server termination.
 
 ## 📂 Project Structure
 ```text
@@ -34,7 +35,7 @@ be-ayaka/
 │   ├── bootstrap/       # The Wiring (Dependency Injection, App Init, Routes)
 │   ├── core/            # Core Business Logic (The Holy Grail - Framework Agnostic)
 │   │   ├── entity/      # Business Rules: Pure Data Structs
-│   │   ├── repository/  # Contracts: Repository Interfaces
+│   │   ├── port/  # Contracts: Repository Interfaces
 │   │   └── service/     # Application Business Rules: Use Cases
 │   ├── delivery/        # Transport Mechanism (The Receptionist)
 │   │   └── http/        # HTTP Handlers (Fiber controllers: health, user, auth)
@@ -44,17 +45,17 @@ be-ayaka/
 └── .env.sample          # Environment variables template
 ```
 
-## Development Workflow
+## Development Protocol
 
-To maintain the integrity of Clean Architecture, follow this sequence when adding a new feature:
+Developers are required to follow this sequence when implementing new features:
 
-1. **Entity (The Corest):** Define your pure data structure in `internal/core/entity/`.
-2. **Repository Interface (The Contract):** Define the database contract in `internal/core/repository/`.
-3. **Repository Adapter (The Implementation):** Write the GORM SQL logic in `internal/adapter/repository/` to fulfill the contract.
-4. **Service (The Brain):** Implement the business logic and use cases in `internal/core/service/`.
-5. **Delivery/Handler (The Receptionist):** Create the HTTP delivery logic in `internal/delivery/http/`.
-6. **Builder (The Matchmaker):** Wire all dependencies (Adapter -> Service -> Handler) together in `internal/bootstrap/builder.go`.
-7. **Routes (The Door):** Register your new endpoint to the Fiber app in `internal/bootstrap/routes.go`.
+1. **Domain Entity:** Define your pure data structure in `internal/core/entity/`.
+2. **Repository Contract:** Define the database contract in `internal/core/port/`.
+3. **Infrastructure Adapter:** Implement the repository interface in `internal/adapter/repository/`.
+4. **Service Layer:** Implement the business logic and use cases in `internal/core/service/`.
+5. **Delivery Layer:** Implement transport-specific logic in `internal/delivery/http/`.
+6. **Composition:** Wire all dependencies (Adapter -> Service -> Handler) together in `internal/bootstrap/builder.go`.
+7. **Routing:** Register the endpoint in `internal/bootstrap/routes.go`.
 
 ## Usage Examples
 

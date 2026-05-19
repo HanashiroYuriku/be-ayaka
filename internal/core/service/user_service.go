@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"be-ayaka/internal/core/entity"
-	"be-ayaka/internal/core/repository"
+	"be-ayaka/internal/core/port"
 )
 
 // UserService defines the interface for user-related business logic
@@ -14,10 +14,10 @@ type UserService interface {
 
 // userServiceImpl is the concrete implementation of UserService
 type userServiceImpl struct {
-	userRepo repository.UserRepository // Add other repositories if needed
+	userRepo port.UserRepository // Add other repositories if needed
 }
 
-func NewUserService(repo repository.UserRepository) UserService {
+func NewUserService(repo port.UserRepository) UserService {
 	return &userServiceImpl{
 		userRepo: repo,
 	}

@@ -25,15 +25,15 @@ func NewPostgresConnection(cfg *config.Config) *gorm.DB {
 
 	// open connection
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: gormlogger.Default.LogMode(gormlogger.Info),
+		Logger: gormlogger.Default.LogMode(gormlogger.Error),
 	})
 
 	if err != nil {
-		ayaka.Log("SYSTEM", "ERROR", fmt.Sprintf("Failed to connect to database: %v", err))
+		ayaka.Log("SYSTEM", "ERROR", fmt.Sprintf("Failed to connect to database: %v", err), "unknown-request-id")
 		panic(fmt.Sprintf("Failed to connect to database: %v", err))
 	}
 
-	ayaka.Log("SYSTEM", "INFOR", "Success connect to database!")
+	ayaka.Log("SYSTEM", "INFOR", "Success connect to database!", "unknown-request-id")
 
 	// auto migrate
 	err = db.AutoMigrate(
@@ -42,9 +42,9 @@ func NewPostgresConnection(cfg *config.Config) *gorm.DB {
 	)
 
 	if err != nil {
-		ayaka.Log("DATABASE", "ERROR", fmt.Sprintf("Failed to migrate database: %v", err))
+		ayaka.Log("DATABASE", "ERROR", fmt.Sprintf("Failed to migrate database: %v", err), "unknown-request-id")
 	} else {
-		ayaka.Log("DATABASE", "INFO", "Database Migration Successful!")
+		ayaka.Log("DATABASE", "INFO", "Database Migration Successful!", "unknown-request-id")
 	}
 
 	return db

@@ -1,36 +1,65 @@
 package service
 
 import (
-	"errors"
+	"context"
 
+	"be-ayaka/internal/core/customerrors"
 	"be-ayaka/internal/core/entity"
 	"be-ayaka/internal/core/port"
+	"be-ayaka/pkg/generateid"
+	"be-ayaka/pkg/hash"
 )
 
 // UserService defines the interface for user-related business logic
 type UserService interface {
-	GetProfile(userID string) (*entity.User, error)
+	Create(ctx context.Context, user *entity.UserRequest) error
+	GetProfile(ctx context.Context, userID string) (*entity.User, error)
 }
 
 // userServiceImpl is the concrete implementation of UserService
 type userServiceImpl struct {
-	userRepo port.UserRepository // Add other repositories if needed
+	userRepo    port.UserRepository
+	hashService hash.HashService
+	txManager   port.TxManager
+	// Add other repositories if needed
 }
 
-func NewUserService(repo port.UserRepository) UserService {
+func NewUserService(repo port.UserRepository, hashService hash.HashService, txManager port.TxManager) UserService {
 	return &userServiceImpl{
-		userRepo: repo,
+		userRepo:    repo,
+		hashService: hashService,
+		txManager:   txManager, //tx manager for handle transaction
 	}
 }
 
-func (s *userServiceImpl) GetProfile(userID string) (*entity.User, error) {
-	user, err := s.userRepo.FindByID(userID)
+func (s *userServiceImpl) Create(ctx context.Context, user *entity.UserRequest) error {
+	passwordHash, err := s.hashService.HashPassword(user.Password)
+	if err != nil {
+		return customerrors.ErrFailHash
+	}
+
+	userModel := &entity.User{
+		Username: user.Username,
+		Email:    user.Email,
+		Password: passwordHash,
+		Role:     "user",
+	}
+	userModel.ID = generateid.GenerateID("USER")
+
+	// tx manager implementation example
+	return s.txManager.WithTx(ctx, func(ctx context.Context) error {
+		if err := s.userRepo.Create(ctx, userModel); err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+func (s *userServiceImpl) GetProfile(ctx context.Context, userID string) (*entity.User, error) {
+	user, err := s.userRepo.FindByID(ctx, userID)
 	if err != nil {
 		return nil, err
-	}
-
-	if user == nil {
-		return nil, errors.New("user not found")
 	}
 
 	return user, nil

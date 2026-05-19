@@ -137,6 +137,9 @@ DATABASE_NAME='ayaka_db'
 # jwt configuration
 JWT_SECRET='jwt secret code'
 JWT_EXPIRED='24'
+
+JWT_REFRESH_SECRET='REFRESH_SECRET_KEY'
+JWT_REFRESH_EXPIRED='10080' # minutes
 ```
 (Note: Never commit your .env file to a public repository!)
 

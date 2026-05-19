@@ -8,8 +8,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	"gorm.io/gorm"
 	"github.com/gofiber/swagger"
+	"gorm.io/gorm"
 )
 
 func SetupRoutes(app *fiber.App, cfg *config.Config, db *gorm.DB) {

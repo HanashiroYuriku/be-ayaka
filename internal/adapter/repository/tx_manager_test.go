@@ -38,7 +38,7 @@ func (s *TxManagerSuite) TestWithTx_SuccessCommit() {
 		// Pastikan ExtractTx berhasil mengambil instance transaksi dari context
 		txDB := repository.ExtractTx(txCtx, s.DB)
 
-		dummyUser := &entity.User{Name: "tx_commit_user"}
+		dummyUser := &entity.User{Username: "tx_commit_user"}
 		dummyUser.ID = "TX-COMMIT-123"
 
 		return txDB.Create(dummyUser).Error
@@ -49,7 +49,7 @@ func (s *TxManagerSuite) TestWithTx_SuccessCommit() {
 	var res entity.User
 	errFind := s.DB.First(&res, "id = ?", "TX-COMMIT-123").Error
 	s.NoError(errFind)
-	s.Equal("tx_commit_user", res.Name)
+	s.Equal("tx_commit_user", res.Username)
 }
 
 // =============================================================================
@@ -62,9 +62,9 @@ func (s *TxManagerSuite) TestWithTx_ForcedRollback() {
 	err := s.manager.WithTx(ctx, func(txCtx context.Context) error {
 		txDB := repository.ExtractTx(txCtx, s.DB)
 
-		dummyUser := &entity.User{Name: "tx_rollback_user"}
+		dummyUser := &entity.User{Username: "tx_rollback_user"}
 		dummyUser.ID = "TX-ROLLBACK-123"
-		
+
 		txDB.Create(dummyUser)
 
 		return forcedError
@@ -84,6 +84,6 @@ func (s *TxManagerSuite) TestExtractTx_ReturnDefaultDB() {
 	ctx := context.Background()
 
 	db := repository.ExtractTx(ctx, s.DB)
-	
+
 	s.Equal(s.DB, db)
 }

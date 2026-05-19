@@ -1,18 +1,25 @@
 package bootstrap
 
 import (
+	"be-ayaka/config"
 	adapterRepo "be-ayaka/internal/adapter/repository"
-	"be-ayaka/internal/delivery/http"
 	"be-ayaka/internal/core/service"
+	"be-ayaka/internal/delivery/http"
 
 	"gorm.io/gorm"
 )
 
-func BuildUserHandler(db *gorm.DB) *http.UserHandler {
+type Handlers struct {
+	User *http.UserHandler
+}
+
+func BuildAllDependencies(db *gorm.DB, cfg *config.Config) *Handlers {
 	// adapter
 	userRepo := adapterRepo.NewUserRepoPostgres(db)
 	// service
 	userService := service.NewUserService(userRepo)
 	// handler
-	return http.NewUserHandler(userService)
+	return &Handlers{
+		User: http.NewUserHandler(userService),
+	}
 }

@@ -6,7 +6,7 @@ services:
     container_name: ayaka_postgres
     environment:
       POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_PASSWORD: ${DATABASE_PASS}
       POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - "${DATABASE_PORT}:5432"
@@ -20,12 +20,10 @@ services:
     container_name: ayaka_backend
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
+    env_file:
+      - .env             
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=${DATABASE_USER}
-      - DB_PASSWORD=${DATABASE_PASSWORD}
-      - DB_NAME=${DATABASE_NAME}
+      - DATABASE_HOST=db
     depends_on:
       - db
     networks:

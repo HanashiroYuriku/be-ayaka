@@ -2,7 +2,7 @@ package http_test
 
 import (
 	"be-ayaka/internal/core/customerrors"
-	"be-ayaka/internal/core/entity"
+	"be-ayaka/internal/delivery/dto"
 	httpDelivery "be-ayaka/internal/delivery/http"
 	"be-ayaka/internal/middleware"
 	"be-ayaka/internal/testingutils"
@@ -47,7 +47,7 @@ func TestUserHandlerSuite(t *testing.T) {
 // ///////////////// TEST REGISTER USER ///////////////////
 // 1. success scenario
 func (s *UserHandlerSuite) TestRegisterUser_Success() {
-	requestBody := entity.UserRequest{
+	requestBody := dto.UserRequest{
 		Username:    "riku",
 		Email:       "riku@mail.com",
 		DisplayName: "Riku",
@@ -81,7 +81,7 @@ func (s *UserHandlerSuite) TestRegisterUser_Failed_BadRequest() {
 
 // 3. failed scenario: error validation
 func (s *UserHandlerSuite) TestRegisterUser_Failed_ValidationError() {
-	requestBody := entity.UserRequest{Username: "ri"}
+	requestBody := dto.UserRequest{Username: "ri"}
 
 	expectedErr := customerrors.NewValidationError(
 		`"username": "username must be at least 3 characters"`,
@@ -101,7 +101,7 @@ func (s *UserHandlerSuite) TestRegisterUser_Failed_ValidationError() {
 
 // 4. failed scenario: internal server error
 func (s *UserHandlerSuite) TestRegisterUser_Failed_InternalServerError() {
-	requestBody := entity.UserRequest{
+	requestBody := dto.UserRequest{
 		Username: "riku",
 		Email:    "riku@mail.com",
 	}
@@ -126,7 +126,7 @@ func (s *UserHandlerSuite) TestRegisterUser_Failed_InternalServerError() {
 // 1. Success scenario
 func (s *UserHandlerSuite) TestGetProfile_Success() {
 	userID := "USER-123"
-	dummyUser := &entity.User{
+	dummyUser := &dto.UserResponse{
 		Username: "riku",
 		Email:    "riku@mail.com",
 	}

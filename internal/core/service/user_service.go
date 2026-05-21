@@ -6,7 +6,7 @@ import (
 	"be-ayaka/internal/core/customerrors"
 	"be-ayaka/internal/core/entity"
 	"be-ayaka/internal/core/port"
-	"be-ayaka/internal/delivery/dto"
+	"be-ayaka/internal/delivery/http/dto"
 	"be-ayaka/pkg/generateid"
 	"be-ayaka/pkg/hash"
 )

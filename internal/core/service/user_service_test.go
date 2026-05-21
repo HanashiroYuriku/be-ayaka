@@ -3,7 +3,7 @@ package service_test
 import (
 	"be-ayaka/internal/core/customerrors"
 	"be-ayaka/internal/core/service"
-	"be-ayaka/internal/delivery/dto"
+	"be-ayaka/internal/delivery/http/dto"
 	mocksPkg "be-ayaka/internal/testingutils/mocks/pkg"
 	mocksRepo "be-ayaka/internal/testingutils/mocks/repository"
 	"context"

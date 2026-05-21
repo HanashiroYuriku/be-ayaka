@@ -44,6 +44,7 @@ be-ayaka/
 │   │   └── service/       # Application Business Rules: Use Cases / Orchestrator
 │   ├── delivery/          # Transport Mechanism (The Receptionist)
 │   │   └── http/          # HTTP Handlers (Fiber controllers: health, user, auth)
+│   │       └── dto/       # Data Transfer Objects (API Request/Response payload structures & validation tags)
 │   ├── middleware/        # HTTP Interceptors (JWT Auth, Role checking, Request ID)
 │   └── testingutils/      # Test fixtures, mock generators, and test suites helpers
 ├── logs/                  # Application runtime and error log files

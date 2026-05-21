@@ -2,8 +2,8 @@ package http
 
 import (
 	"be-ayaka/internal/core/customerrors"
-	"be-ayaka/internal/core/entity"
 	"be-ayaka/internal/core/service"
+	"be-ayaka/internal/delivery/dto"
 	"be-ayaka/pkg/logger"
 	"be-ayaka/pkg/requestid"
 	"be-ayaka/pkg/response"
@@ -39,7 +39,7 @@ func NewUserHandler(userService service.UserService, validator validator.Validat
 func (h *UserHandler) RegisterUser(c *fiber.Ctx) error {
 	requestId := requestid.GetRequestID(c)
 
-	var request entity.UserRequest
+	var request dto.UserRequest
 
 	if err := c.BodyParser(&request); err != nil {
 		go logger.Log("SYSTEM", "ERROR", "Failed to parse request body: "+err.Error(), requestId)
@@ -73,8 +73,8 @@ func (h *UserHandler) RegisterUser(c *fiber.Ctx) error {
 // @Tags Authentication
 // @Accept json
 // @Produce json
-// @Param request body entity.UserRequest true "Payload Register"
-// @Success 200 {object} response.Response{data=entity.User}
+// @Param request body dto.UserRequest true "Payload Register"
+// @Success 200 {object} response.Response{data=dto.UserResponse}
 // @Failure 404 {object} response.Response "Profile not found"
 // @Router /api/v1/auth/profile [get]
 func (h *UserHandler) GetProfile(c *fiber.Ctx) error {

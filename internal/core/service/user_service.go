@@ -6,14 +6,15 @@ import (
 	"be-ayaka/internal/core/customerrors"
 	"be-ayaka/internal/core/entity"
 	"be-ayaka/internal/core/port"
+	"be-ayaka/internal/delivery/dto"
 	"be-ayaka/pkg/generateid"
 	"be-ayaka/pkg/hash"
 )
 
 // UserService defines the interface for user-related business logic
 type UserService interface {
-	Create(ctx context.Context, user *entity.UserRequest) error
-	GetProfile(ctx context.Context, userID string) (*entity.User, error)
+	Create(ctx context.Context, user *dto.UserRequest) error
+	GetProfile(ctx context.Context, userID string) (*dto.UserResponse, error)
 }
 
 // userServiceImpl is the concrete implementation of UserService
@@ -32,7 +33,7 @@ func NewUserService(repo port.UserRepository, hashService hash.HashService, txMa
 	}
 }
 
-func (s *userServiceImpl) Create(ctx context.Context, user *entity.UserRequest) error {
+func (s *userServiceImpl) Create(ctx context.Context, user *dto.UserRequest) error {
 	passwordHash, err := s.hashService.HashPassword(user.Password)
 	if err != nil {
 		return customerrors.ErrFailHash
@@ -56,11 +57,15 @@ func (s *userServiceImpl) Create(ctx context.Context, user *entity.UserRequest) 
 	})
 }
 
-func (s *userServiceImpl) GetProfile(ctx context.Context, userID string) (*entity.User, error) {
+func (s *userServiceImpl) GetProfile(ctx context.Context, userID string) (*dto.UserResponse, error) {
 	user, err := s.userRepo.FindByID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
-
-	return user, nil
+	return &dto.UserResponse{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+		Role:     user.Role,
+	}, nil
 }

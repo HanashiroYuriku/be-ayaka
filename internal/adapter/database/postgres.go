@@ -38,6 +38,7 @@ func NewPostgresConnection(cfg *config.Config) *gorm.DB {
 	// auto migrate
 	err = db.AutoMigrate(
 		&entity.User{},
+		// db.AutoMigrate(&entity.AuditLog{}) // Uncomment this line to enable auto-migration for the AuditLog table
 		// add other table
 	)
 

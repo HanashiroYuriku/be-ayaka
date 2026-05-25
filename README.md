@@ -22,6 +22,8 @@ Ayaka is a backend API template developed in the Go programming language, adheri
 5. **Schema Management:** Automated database migrations via Go structs (Code-First approach).
 6. **Advanced Validation:** Custom database-aware validation tags (`unique`, `incolumn`) designed to enforce referential integrity and mitigate injection risks.
 7. **Process Management:** Implementation of graceful shutdown procedures to ensure data integrity during server termination.
+8. **Pagination:** A unified and type-safe pagination builder utilizing Go Generics, providing consistent, frontend-friendly JSON payloads (data arrays and metadata) across all endpoints.
+9. **Audit Trail (Optional):** Built-in infrastructure for automated activity logging and historical data tracking, ensuring accountability and traceability for state-mutating operations.
 
 ## 📂 Project Structure
 ```text
